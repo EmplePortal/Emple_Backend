@@ -2,8 +2,9 @@ import User from "../models/User.js";
 
 export const syncUser = async (req, res) => {
   try {
-    const descopeId = req.user.userId;
-    const email = req.user.email;
+
+    const descopeId = req.user.userId || req.user.sub;
+    const email = req.user.email || "";
 
     let user = await User.findOne({ descopeId });
 
@@ -17,6 +18,12 @@ export const syncUser = async (req, res) => {
     res.json(user);
 
   } catch (err) {
-    res.status(500).json({ error: err.message });
+
+    console.error(err);
+
+    res.status(500).json({
+      error: "User sync failed"
+    });
+
   }
 };
